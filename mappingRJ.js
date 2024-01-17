@@ -72,9 +72,34 @@ activitiesAZ.forEach((activitiesLink) => {
 console.log(activitiesPopUp);
 
 
-// items.forEach((item) => {
-//     copyItems.push(item);
-// });
+// Use this link to get the Activities data
+// Grand Canyon (GRCA)
+let linkAmenitiesGRCA = "https://developer.nps.gov/api/v1/amenities?q=GRCA&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
+// Petrified Forest (PEFO)
+let linkAmenitiesPEFO = "https://developer.nps.gov/api/v1/amenities?q=PEFO&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
+// Saguaro (SAGU)
+let linkAmenitiesSAGU = "https://developer.nps.gov/api/v1/amenities?q=SAGU&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
+let amenitiesAZ = [linkAmenitiesGRCA, linkAmenitiesPEFO, linkAmenitiesSAGU]
+let amenitiesPopUp = [];
+
+// Create Amenities Popup for each Park
+amenitiesAZ.forEach((amenitiesLink) => {
+    let amenities,amenitiesList;
+    d3.json(amenitiesLink).then(function(data) {
+        // console.log(data.data)
+        amenities = data.data;
+        amenitiesList = "<h2>Available Park Amenities:</h2>";
+        amenities.forEach((amenity) => {
+            // console.log(amenity.name)
+            amenitiesList = amenitiesList + amenity.name + " <br> "
+        })
+        amenitiesPopUp.push(amenitiesList);
+    });
+});
+console.log(amenitiesPopUp);
+
+
+
 
 // Getting our GeoJSON data
 
@@ -137,7 +162,7 @@ for(let i = 0;i<parksAZ.length;i++) {
                 //     layer.bindPopup(activitiesList);
                 //     console.log(activitiesList);
                 // }
-                layer.bindPopup(activitiesPopUp[i]);
+                layer.bindPopup(amenitiesPopUp[i],{"maxHeight":"350"});
             }
         }).addTo(myMap);
     });
