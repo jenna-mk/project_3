@@ -21,7 +21,7 @@ let street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 street.addTo(myMap);
 
 // Write a function to create the markers
-function createCampgroundMarker(url1) {
+function createCampgroundMarker(url) {
     // Fetch the data 
     d3.json(url).then(data => {
         console.log(data.total);
