@@ -1,58 +1,77 @@
-import pandas as pd
 import json
 from pprint import pprint
 
-# Your JSON data
-json_data = '''
+json_data = {
+
+"total":"1",
+"limit":"50",
+"start":"0",  
+"data":[
+
 {
-  "total": "1",
-  "limit": "50",
-  "start": "0",
-  "data": [
-    {
-      "id": "A6F169CF-B830-499C-A5EB-A35138C77589",
-      "url": "https://www.nps.gov/sagu/index.htm",
-      "fullName": "Saguaro National Park",
-      "parkCode": "sagu",
-      "description": "Tucson, Arizona is home to the nation's largest cacti. The giant saguaro is the universal symbol of the American west. These majestic plants, found only in a small portion of the United States, are protected by Saguaro National Park, to the east and west of the modern city of Tucson. Here you have a chance to see these enormous cacti, silhouetted by the beauty of a magnificent desert sunset.",
-      "latitude": "32.20909636",
-      "longitude": "-110.7574974",
-      "latLong": "lat:32.20909636, long:-110.7574974",
-      "activities": [
-        {"id": "09DF0950-D319-4557-A57E-04CD2F63FF42", "name": "Arts and Culture"},
-        {"id": "5F723BAD-7359-48FC-98FA-631592256E35", "name": "Auto and ATV"},
-        // ... (other activities)
-      ],
-      "topics": [
-        {"id": "7F81A0CB-B91F-4896-B9A5-41BE9A54A27B", "name": "Archeology"},
-        {"id": "0B575E33-B68F-4F3D-998E-B03284606CF3", "name": "Industry"},
-        // ... (other topics)
-      ],
-      "states": "AZ",
-      "contacts": {
-        "phoneNumbers": [{"phoneNumber": "5207335153", "description": "", "extension": "", "type": "Voice"}],
-        "emailAddresses": [{"description": "", "emailAddress": "sagu_information@nps.gov"}]
-      },
-      "entranceFees": [
-        {"cost": "25.00", "description": "The vehicle entrance pass is sold in the form of a dated register receipt...", "title": "Entrance - Private Vehicle"},
-        // ... (other entrance fees)
-      ],
-      // ... (other fields)
-      "images": [
-        {"credit": "NPS Photo", "title": "Saguaro Flowers", "altText": "Saguaro flowers", "caption": "The flowering season in Saguaro National Park attracts visitors from all over the world.", "url": "https://www.nps.gov/common/uploads/structured_data/5CB8B2F6-01B7-9A50-73702A355E4136B8.jpg"},
-        // ... (other images)
-      ],
-      // ... (other fields)
-    }
-  ]
+
+"id":"A6F169CF-B830-499C-A5EB-A35138C77589"
+
+,"url":
+
+"https://www.nps.gov/sagu/index.htm"
+
+,"fullName":"Saguaro National Park"      
+
+,"parkCode":"sagu"
+
+,"description":"Tucson, Arizona is home to the nation's largest cacti. The giant saguaro is the universal symbol of the American west. These majestic plants, found only in a small portion of the United States, are protected by Saguaro National Park, to the east and west of the modern city of Tucson. Here you have a chance to see these enormous cacti, silhouetted by the beauty of a magnificent desert sunset."
+
+,"latitude":
+
+"32.20909636" 
+
+,"longitude":
+
+"-110.7574974" 
+
+,"latLong":"lat:32.20909636, long:-110.7574974"
+
+,"activities":[{"id":"09DF0950-D319-4557-A57E-04CD2F63FF42","name":"Arts and Culture"},{"id":"5F723BAD-7359-48FC-98FA-631592256E35","name":"Auto and ATV"},{"id":"0B4A5320-216D-451A-9990-626E1D5ACE28","name":"Scenic Driving"},{"id":"13A57703-BB1A-41A2-94B8-53B692EB7238","name":"Astronomy"},{"id":"D37A0003-8317-4F04-8FB0-4CF0A272E195","name":"Stargazing"},{"id":"7CE6E935-F839-4FEC-A63E-052B1DEF39D2","name":"Biking"},{"id":"A59947B7-3376-49B4-AD02-C0423E08C5F7","name":"Camping"},{"id":"4A58AF13-E8FB-4530-B41A-97DF0B0C77B7","name":"Backcountry Camping"},{"id":"B33DC9B6-0B7D-4322-BAD7-A13A34C584A3","name":"Guided Tours"},{"id":"BFF8C027-7C8F-480B-A5F8-CD8CE490BFBA","name":"Hiking"},{"id":"7C37B79B-D02D-49EB-9020-3DB8299B748A","name":"Backcountry Hiking"},{"id":"DF4A35E0-7983-4A3E-BC47-F37B872B0F25","name":"Junior Ranger Program"}]
+,"topics":[{"id":"7F81A0CB-B91F-4896-B9A5-41BE9A54A27B","name":"Archeology"},{"id":"0B575E33-B68F-4F3D-998E-B03284606CF3","name":"Industry"},{"id":"BDC806A8-5470-4A8B-A0F9-CD804BE3028A","name":"Mining"},{"id":"A1BAF33E-EA84-4608-A888-4CEE9541F027","name":"Native American Heritage"},{"id":"3CDB67A9-1EAC-408D-88EC-F26FA35E90AF","name":"Schools and Education"},{"id":"C9C749E3-39C3-45F7-BCC5-9A609E30AA05","name":"Westward Expansion"},{"id":"D1722DD1-E314-4B6D-8116-DED86305C4A4","name":"Homesteading"},{"id":"0D00073E-18C3-46E5-8727-2F87B112DDC6","name":"Animals"},{"id":"04A39AB8-DD02-432F-AE5F-BA1267D41A0D","name":"Fire"},{"id":"F6D3A52E-608F-47D6-96DF-1FD64122A2FC","name":"Fossils and Paleontology"},{"id":"F0F97E32-2F29-41B4-AF98-9FBE8DAB36B1","name":"Geology"},{"id":"A155238F-0DD2-4610-9B87-05FCE1C59283","name":"River and Riparian"},{"id":"9C9FCBB6-360B-4743-8155-6F9341CBE01B","name":"Scenic Views"},{"id":"5BE55D7F-BDB6-4E3D-AC35-2D8EBB974417","name":"Trails"},{"id":"B85866E2-0897-4000-9040-605CA335804F","name":"Wilderness"}]
+,"states":"AZ"
+
+,"contacts":{"phoneNumbers":[{"phoneNumber":"5207335153","description":"","extension":"","type":"Voice"}],"emailAddresses":[{"description":"","emailAddress":"sagu_information@nps.gov"}]}
+,"entranceFees":[{"cost":"25.00","description":"The vehicle entrance pass is sold in the form of a dated register receipt and admits one privately owned, non-commercial vehicle into Saguaro National Park. This includes passenger cars, trucks, vans, recreational vehicles, campers, or converted buses used for private, recreational purposes.","title":"Entrance - Private Vehicle"},{"cost":"15.00","description":"Individuals entering the park by means other than a motor vehicle may purchase individual entrance passes. This includes hikers, horseback riders and bicyclists. The individual entrance fee is charged to anyone 16 years of age or older.","title":"Entrance - Per Person"},{"cost":"20.00","description":"This fee is charged per-vehicle upon entrance, regardless of the number of riders. An Annual Pass will cover two motorcycles traveling together if the two people who signed that pass are on different motorcycles. A Lifetime Pass (such as the Access or Senior Pass) with one signature line will only cover one motorcycle.","title":"Entrance - Motorcycle"}]
+,"entrancePasses":[{"cost":"45.00","description":"This pass covers up to 4 adults (anyone over the age of 16).","title":"Annual Entrance - Park"}]
+,"fees":[]
+,"directionsInfo":"Saguaro National Park has two districts separated by the city of Tucson. The address for the Saguaro National Park West District is 2700 N Kinney Rd. We do not recommend using mobile mapping applications to search for either district. Instead, please click the link to the directions page, determine which district you plan to visit, and enter that physical address into the mobile application."
+
+,"directionsUrl":"https://www.nps.gov/sagu/planyourvisit/directionstothepark.htm"
+
+,"operatingHours":[{"exceptions":[],"description":"The park is always open, except under emergency conditions. You can walk or bike into the park 24 hours a day.\n\nIn the Tucson Mountain District (West), The Bajada Loop Scenic Drive (Golden Gate Road and Hohokam Road) is open to vehicles daily during daylight hours.\n\nIn the Rincon Mountain District (East), the Cactus Forest Loop Drive is open daily 5:00 am to 8:30 pm.","standardHours":{"wednesday":"Closes at 12:00PM","monday":"Closes at 12:00PM","thursday":"Closes at 12:00PM","sunday":"Closes at 12:00PM","tuesday":"Closes at 12:00PM","friday":"Closes at 12:00PM","saturday":"Closes at 12:00PM"},"name":"Saguaro National Park"}]
+,"addresses":[{"postalCode":"85730","city":"Tucson","stateCode":"AZ","countryCode":"US","provinceTerritoryCode":"","line1":"3693 S Old Spanish Trail","type":"Physical","line3":"","line2":""},{"postalCode":"85730","city":"Tucson","stateCode":"AZ","countryCode":"US","provinceTerritoryCode":"","line1":"3693 S Old Spanish Trail","type":"Mailing","line3":"","line2":""}]
+,"images":[{"credit":"NPS Photo","title":"Saguaro Flowers","altText":"Saguaro flowers","caption":"The flowering season in Saguaro National Park attracts visitors from all over the world.","url":"https://www.nps.gov/common/uploads/structured_data/5CB8B2F6-01B7-9A50-73702A355E4136B8.jpg"},{"credit":"NPS Photo/ Bolyard","title":"Flowering Fishhook Pincushion Cactus","altText":"A flowering fishhook pincushion cactus","caption":"Wildflower season at Saguaro National Park is at it's peak in the month of MArch. The Pincushion cactus, however, blooms April through August.","url":"https://www.nps.gov/common/uploads/structured_data/3C858462-1DD8-B71B-0BB499810C61332C.jpg"},{"credit":"NPS Photo","title":"Coyote Pups","altText":"Two coyote pups captured on a wilderness camera","caption":"Saguaro National Park has a vast variety of wildlife, and with the help of wilderness cameras, can be photographed to help with studies and for visitors to learn about animals only seen by chance.","url":"https://www.nps.gov/common/uploads/structured_data/3C858613-1DD8-B71B-0BEFB533FAB3FB55.jpg"},{"credit":"NPS Photo","title":"Saguaro National Park Lighting Storm","altText":"Lightning strike captured on camera with saguaros in the background","caption":"Saguaro deaths are usually attributed to natural weather conditions and other natural phenomena. Specifically, lightning strikes have been known to strike saguaros due to the large amount of water stored within their fleshy tissue.","url":"https://www.nps.gov/common/uploads/structured_data/3C85873C-1DD8-B71B-0BA5D81599611142.jpg"},{"credit":"NPS Photo","title":"Weather at Saguaro National Park","altText":"Rare Sight of snow in Saguaro National Park East Visitor Center (Rincon Mountain District)","caption":"Saguaro National Park summers can be extremely hot with temperatures exceeding 105 degrees F, lows averaging 72 degrees F.  Winters are mild warm days averaging 65 degrees F and cool nights averaging 40 degrees F. Snowfall is extremely rare in the area.","url":"https://www.nps.gov/common/uploads/structured_data/3C858903-1DD8-B71B-0BE2312B40DB3D26.jpg"},{"credit":"NPS Photo","title":"Group of Regal Horned Lizards","altText":"A group of Phrynosoma solare, or regal horned lizards.","caption":"Regal horned lizards are one of many reptiles in the park, who have adapted to living in the harsh desert environment. Information on how different species survive can be found on the park's website, visitor center, or through our many programs offered.","url":"https://www.nps.gov/common/uploads/structured_data/3C858AB6-1DD8-B71B-0B0F6C0A56410894.jpg"}]
+,"weatherInfo":"Winter Season With daytime temperature from the low 50's to the high 70's Summer Season As we get deeper into the summer season, temperatures will range from mid-90's to low 110's. This is a great time to experience the desert as the day breaks or in the late of the day as the sun disappears behind the surrounding mountain ranges. During the late spring and summer months Saguaro National Park only offers interpretive programs on an intermittent basis."
+
+,"name":"Saguaro"
+
+,"designation":"National Park"
+
+,"relevanceScore":1.0
+
 }
-'''
 
-# Convert JSON to Python dictionary
-data_dict = json.loads(json_data)
+]
+}
 
-# Convert dictionary to DataFrame
-df = pd.json_normalize(data_dict['data'])
 
-# Display the DataFrame
-print(df)
+
+
+
+pprint(json_data)
+
+# Define the file path where you want to save the JSON data
+file_path = "Saguaro.json"
+
+# Open the file in write mode and save the JSON data
+with open(file_path, "w") as json_file:
+    json.dump(json_data, json_file, indent=4)
+
+# Optionally, you can print a message to confirm that the data has been saved
+print(f"JSON data has been saved to {file_path}")

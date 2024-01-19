@@ -1,5 +1,7 @@
- 
-{
+import json
+from pprint import pprint
+
+json_data = {
 
 "total":"1",
 "limit":"50",
@@ -56,4 +58,16 @@
 }
 
 ]
-}
+} 
+
+pprint(json_data)
+
+# Define the file path where you want to save the JSON data
+file_path = "Grand_Canyon.json"
+
+# Open the file in write mode and save the JSON data
+with open(file_path, "w") as json_file:
+    json.dump(json_data, json_file, indent=4)
+
+# Optionally, you can print a message to confirm that the data has been saved
+print(f"JSON data has been saved to {file_path}")
