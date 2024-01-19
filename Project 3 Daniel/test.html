@@ -3,107 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unified Radar Chart Example</title>
-    <!-- Include Chart.js from CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>NPS Parks Activities</title>
 </head>
 <body>
-    <!-- Create a canvas element for the unified radar chart -->
-    <canvas id="unifiedRadarChart" width="400" height="400"></canvas>
-
     <script>
-        // Function to fetch data from the API
-        async function fetchData(apiUrl) {
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
+        // API endpoints for park data
+        var apiEndpoints = [
+            'https://developer.nps.gov/api/v1/parks?parkCode=sagu&api_key=479HXbPsSqNacjdnouvPQi4c0tIkAmtjTd0cSHrS',
+            'https://developer.nps.gov/api/v1/parks?parkCode=pefo&api_key=479HXbPsSqNacjdnouvPQi4c0tIkAmtjTd0cSHrS',
+            'https://developer.nps.gov/api/v1/parks?parkCode=grca&api_key=479HXbPsSqNacjdnouvPQi4c0tIkAmtjTd0cSHrS'
+        ];
+
+        // Function to fetch data from API
+        async function fetchData(apiEndpoint) {
+            const response = await fetch(apiEndpoint);
+            const data = await response.json();
+            return data;
         }
 
-        // Function to find unique activities across all parks
-        function findUniqueActivities(parks) {
-            const uniqueActivities = new Set();
-            parks.forEach(park => {
-                park.activities.forEach(activity => {
-                    uniqueActivities.add(activity.name);
+        // Fetch data from each API endpoint
+        Promise.all(apiEndpoints.map(fetchData))
+            .then(dataArray => {
+                // Display activities for each location
+                dataArray.forEach(data => {
+                    var parkName = data.data[0].fullName;
+                    var activities = data.data[0].activities.map(activity => activity.name);
+
+                    console.log(`Activities for ${parkName}:`);
+                    activities.forEach(activity => {
+                        console.log(`- ${activity}`);
+                    });
+                    console.log('\n');
                 });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
             });
-            return [...uniqueActivities];
-        }
-
-        // Function to update the unified radar chart with fetched data
-        async function updateUnifiedRadarChart() {
-            // Define API URLs
-            const apiUrl1 = 'https://developer.nps.gov/api/v1/parks?parkCode=sagu&api_key=479HXbPsSqNacjdnouvPQi4c0tIkAmtjTd0cSHrS';
-            const apiUrl2 = 'https://developer.nps.gov/api/v1/parks?parkCode=pefo&api_key=479HXbPsSqNacjdnouvPQi4c0tIkAmtjTd0cSHrS';
-            const apiUrl3 = 'https://developer.nps.gov/api/v1/parks?parkCode=grca&api_key=479HXbPsSqNacjdnouvPQi4c0tIkAmtjTd0cSHrS';
-
-            // Fetch data from each API URL
-            const apiData1 = await fetchData(apiUrl1);
-            const apiData2 = await fetchData(apiUrl2);
-            const apiData3 = await fetchData(apiUrl3);
-
-            // Extract relevant data from the API responses
-            const parkData1 = apiData1.data[0];
-            const parkData2 = apiData2.data[0];
-            const parkData3 = apiData3.data[0];
-
-            // Find unique activities across all parks
-            const allParks = [parkData1, parkData2, parkData3];
-            const uniqueActivitiesAllParks = findUniqueActivities(allParks);
-
-            console.log('Unique activities across all parks:', uniqueActivitiesAllParks);
-
-            // Check if Chart is defined
-            if (typeof Chart !== 'undefined') {
-                // Use the extracted data to update the unified radar chart
-                updateRadarChart('unifiedRadarChart', 'Comparison of Unique Activities', allParks);
-            } else {
-                // Chart.js is not defined
-                console.error('Chart.js is not loaded. Please check your script inclusion.');
-            }
-        }
-
-        // Function to update a radar chart
-        function updateRadarChart(canvasId, chartTitle, parksData) {
-            const uniqueActivities = findUniqueActivities(parksData);
-
-            const datasets = parksData.map((park, index) => ({
-                label: park.fullName,
-                backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.2)`,
-                borderColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`,
-                borderWidth: 1,
-                data: uniqueActivities.map(activity =>
-                    park.activities.some(parkActivity => parkActivity.name === activity) ? 1 : 0
-                )
-            }));
-
-            const data = {
-                labels: uniqueActivities,
-                datasets: datasets
-            };
-
-            const options = {
-                scales: {
-                    r: {
-                        beginAtZero: true
-                    }
-                }
-            };
-
-            const ctx = document.getElementById(canvasId).getContext('2d');
-            const radarChart = new Chart(ctx, {
-                type: 'radar',
-                data: data,
-                options: options
-            });
-        }
-
-        // Call the updateUnifiedRadarChart function to initiate the process
-        updateUnifiedRadarChart();
     </script>
 </body>
 </html>

@@ -39,8 +39,11 @@ let linkPEFO = "https://developer.nps.gov/api/v1/mapdata/parkboundaries/PEFO?api
 // Saguaro (SAGU)
 let linkSAGU = "https://developer.nps.gov/api/v1/mapdata/parkboundaries/SAGU?api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
 let parksAZ = [linkGRCA, linkPEFO, linkSAGU]
+let parkNames = ["Grand Canyon National Park","Petrified Forest National Park","Saguaro National Park"]
 
 let amenitiesMarkers = [];
+
+amenitiesCreateMarkers();
 
 function amenitiesCreateMarkers(){
     // Use this link to get the Activities data
@@ -59,7 +62,8 @@ function amenitiesCreateMarkers(){
         d3.json(amenitiesAZ[i]).then(function(data) {
             // console.log(data.data)
             amenities = data.data;
-            amenitiesList = "<h2>Available Park Amenities:</h2>";
+            // amenitiesList = "<h2>Available Park Amenities:</h2>";
+            amenitiesList = "<h2>" + parkNames[i] + "</h2> <h3> Available Amenities:</h3><hr>";
             amenities.forEach((amenity) => {
                 // console.log(amenity.name)
                 amenitiesList = amenitiesList + amenity.name + " <br> "
@@ -78,7 +82,6 @@ function amenitiesCreateMarkers(){
             }
         });
     };
-    // console.log(amenitiesPopUp);
 }
 
 
@@ -97,11 +100,13 @@ function activitiesCreateMarkers(amenitiesMarkers) {
 
     // Create Activities Popup for each Park
     for(let i = 0;i<activitiesAZ.length;i++) {
+        // console.log(`Acitivities loop ${i}`);
         let activities,activitiesList;
         d3.json(activitiesAZ[i]).then(function(data) {
             // console.log(data.data)
             activities = data.data;
-            activitiesList = "<h2>Available Park Activities:</h2>";
+            // activitiesList = "<h2>Available Park Activities:</h2>";
+            activitiesList = "<h2>" + parkNames[i] + "</h2> <h3> Available Activities:</h3><hr>";
             activities.forEach((activity) => {
                 // console.log(amenity.name)
                 activitiesList = activitiesList + activity.name + " <br> "
@@ -114,13 +119,13 @@ function activitiesCreateMarkers(amenitiesMarkers) {
                 L.marker(parksCoords[i]).bindPopup(activitiesList,{"maxHeight":"350"})
             );
             if(i == 2) {
-                // console.log(amenitiesMarkers);
+                // console.log("Inside loop: ");
+                // console.log(activitiesMarkers[0]);
                 // return activitiesMarkers;
                 makeMap(amenitiesMarkers,activitiesMarkers);
             }
         });
     };
-    // console.log(activitiesPopUp);
 }
 
 
@@ -148,7 +153,7 @@ function makeMap(amenitiesMarkers,activitiesMarkers) {
     createBoundaries(myMap);
 }
 
-amenitiesCreateMarkers();
+// amenitiesCreateMarkers();
 
 // Creating Park Boundaries
 function createBoundaries(myMap) {
