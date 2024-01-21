@@ -3,74 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NPS Parks Comparison</title>
-    <!-- Include Chart.js from CDN -->
+    <title>National Park Activities Comparison</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <!-- Create a canvas element for the bar graph -->
-    <canvas id="myBarChart" width="400" height="400"></canvas>
+    <canvas id="activitiesChart" width="800" height="400"></canvas>
 
     <script>
-        // Check if Chart is defined (for troubleshooting)
-        if (typeof Chart !== 'undefined') {
-            // API endpoints for park data
-            var apiEndpoints = [
-                'https://developer.nps.gov/api/v1/parks?parkCode=sagu&api_key=479HXbPsSqNacjdnouvPQi4c0tIkAmtjTd0cSHrS',
-                'https://developer.nps.gov/api/v1/parks?parkCode=pefo&api_key=479HXbPsSqNacjdnouvPQi4c0tIkAmtjTd0cSHrS',
-                'https://developer.nps.gov/api/v1/parks?parkCode=grca&api_key=479HXbPsSqNacjdnouvPQi4c0tIkAmtjTd0cSHrS'
-            ];
+        // Activities data for three national parks
+        const parkData = {
+            saguaro: [
+                "Arts and Culture",
+                "Auto and ATV",
+                "Scenic Driving",
+                "Astronomy",
+                "Stargazing",
+                "Biking",
+                "Camping",
+                "Backcountry Camping",
+                "Guided Tours",
+                "Hiking",
+                "Backcountry Hiking",
+                "Junior Ranger Program"
+            ],
+            petrifiedForest: [
+                "Arts and Culture",
+                "Cultural Demonstrations",
+                "Auto and ATV",
+                "Scenic Driving",
+                "Astronomy",
+                "Stargazing",
+                "Biking",
+                "Road Biking",
+                "Camping",
+                "Backcountry Camping",
+                "Horse Camping",
+                "Compass and GPS",
+                "Geocaching",
+                "Orienteering",
+                "Food",
+                "Dining",
+                "Picnicking",
+                "Guided Tours",
+                "Self-Guided Tours - Walking",
+                "Self-Guided Tours - Auto",
+                "Hands-On",
+                "Citizen Science",
+                "Hiking",
+                "Backcountry Hiking",
+                "Front-Country Hiking",
+                "Off-Trail Permitted Hiking",
+                "Horse Trekking",
+                "Horse Camping",
+                "Horseback Riding",
+                "Junior Ranger Program",
+                "Wildlife Watching",
+                "Birdwatching",
+                "Park Film",
+                "Museum Exhibits",
+                "Shopping",
+                "Bookstore and Park Store",
+                "Gift Shop and Souvenirs"
+            ],
+            grandCanyon: [
+                "Arts and Culture",
+                "Cultural Demonstrations",
+                "Auto and ATV",
+                "Scenic Driving",
+                "Astronomy",
+                "Stargazing",
+                "Biking",
+                "Road Biking",
+                "Boating",
+                "Camping",
+                "Backcountry Camping",
+                "Car or Front Country Camping",
+                "Horse Camping",
+                "Fishing",
+                "Food",
+                "Flying",
+                "Guided Tours",
+                "Hands-On",
+                "Volunteer Vacation",
+                "Hiking",
+                "Backcountry Hiking",
+                "Front-Country Hiking",
+                "Horse Trekking",
+                "Paddling",
+                "Whitewater Rafting",
+                "Junior Ranger Program",
+                "Wildlife Watching",
+                "Birdwatching",
+                "Park Film",
+                "Museum Exhibits",
+                "Shopping",
+                "Bookstore and Park Store"
+            ]
+        };
 
-            // Function to fetch data from API
-            async function fetchData(apiEndpoint) {
-                const response = await fetch(apiEndpoint);
-                const data = await response.json();
-                return data;
-            }
+        // Extracting data for Chart.js
+        const parkNames = Object.keys(parkData);
+        const activityLabels = parkData.saguaro;
+        const activityCountsSaguaro = parkData.saguaro.map(activity => Math.floor(Math.random() * 20) + 1); // Example random counts
+        const activityCountsPetrifiedForest = parkData.petrifiedForest.map(activity => Math.floor(Math.random() * 20) + 1); // Example random counts
+        const activityCountsGrandCanyon = parkData.grandCanyon.map(activity => Math.floor(Math.random() * 20) + 1); // Example random counts
 
-            // Fetch data from each API endpoint
-            Promise.all(apiEndpoints.map(fetchData))
-                .then(dataArray => {
-                    // Extract relevant data for the bar graph
-                    var labels = dataArray.map(data => data.data[0].fullName);
-                    var activitiesData = dataArray.map(data => data.data[0].activities.length);
-
-                    // Bar graph data
-                    var data = {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Activities Count',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1,
-                            data: activitiesData
-                        }]
-                    };
-
-                    // Configuration options for the bar graph
-                    var options = {
-                        scales: {
-                            y: {
-                                beginAtZero: true
+        // Creating a bar chart
+        const ctx = document.getElementById('activitiesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: activityLabels,
+                datasets: [
+                    {
+                        label: parkNames[0],
+                        data: activityCountsSaguaro,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                    },
+                    {
+                        label: parkNames[1],
+                        data: activityCountsPetrifiedForest,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                    },
+                    {
+                        label: parkNames[2],
+                        data: activityCountsGrandCanyon,
+                        backgroundColor: 'rgba(255, 206, 86, 0.7)'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Activities',
+                            font: {
+                                size: 16
                             }
                         }
-                    };
-
-                    // Get the canvas element and render the bar graph
-                    var ctx = document.getElementById('myBarChart').getContext('2d');
-                    var myBarChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: data,
-                        options: options
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
-        } else {
-            // Chart.js is not defined
-            console.error('Chart.js is not loaded. Please check your script inclusion.');
-        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Activities',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
     </script>
 </body>
 </html>

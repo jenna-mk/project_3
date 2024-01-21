@@ -1,6 +1,5 @@
 # Dependencies and Setup
 import pandas as pd
-import requests
 
 # Import the National Park API key
 from api_keys import National_Park_api_key
