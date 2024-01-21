@@ -3,7 +3,7 @@ The purpose of this project was to create an interactive map of the national par
 
 ## How to Use
 To view the visualizations, navigate to the mappingRJ_JK.html webpage for the interactive map, and the [INSERT DANIEL AND DAVID'S WEBPAGE HERE] for the charts. The map has three layers: 
-1. Amenitiies
+1. Amenities
    * When an amenities marker is clicked, a scrollable popup will appear that lists all of the amenities available at that park
 2. Activities
    * When an activities marker is clicked, a scrollable popup will appear that lists all of the activities availanle at that park
