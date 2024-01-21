@@ -20,6 +20,9 @@ let street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 });
 street.addTo(myMap);
 
+// Create a global array for the campground markers
+let campgroundMarkers = [];
+
 // Write a function to create the markers
 function createCampgroundMarker(url) {
     // Fetch the data 
@@ -28,7 +31,7 @@ function createCampgroundMarker(url) {
         console.log(data.data);
         console.log(data.data[0].name);
         // Find the number of campgrounds 
-        let numCampgrounds = data1.data.length;
+        let numCampgrounds = data.data.length;
         console.log(numCampgrounds);
 
         // Initialize an array for the campground markers
