@@ -41,11 +41,9 @@ let linkSAGU = "https://developer.nps.gov/api/v1/mapdata/parkboundaries/SAGU?api
 let parksAZ = [linkGRCA, linkPEFO, linkSAGU]
 let parkNames = ["Grand Canyon National Park","Petrified Forest National Park","Saguaro National Park"]
 
-let amenitiesMarkers = [];
+createAmenitiesMarkers();
 
-amenitiesCreateMarkers();
-
-function amenitiesCreateMarkers(){
+function createAmenitiesMarkers(){
     // Use this link to get the Activities data
     // Grand Canyon (GRCA)
     let linkAmenitiesGRCA = "https://developer.nps.gov/api/v1/amenities?q=GRCA&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
@@ -55,6 +53,7 @@ function amenitiesCreateMarkers(){
     let linkAmenitiesSAGU = "https://developer.nps.gov/api/v1/amenities?q=SAGU&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
     let amenitiesAZ = [linkAmenitiesGRCA, linkAmenitiesPEFO, linkAmenitiesSAGU]
     let amenitiesPopUp = [];
+    let amenitiesMarkers = [];
 
     // Create Amenities Popup for each Park
     for(let i = 0;i<amenitiesAZ.length;i++) {
@@ -78,16 +77,16 @@ function amenitiesCreateMarkers(){
             if(i == 2) {
                 // console.log(amenitiesMarkers);
                 // intermediate(amenitiesMarkers);
-                activitiesCreateMarkers(amenitiesMarkers);
+                createActivitiesMarkers(amenitiesMarkers);
             }
         });
     };
 }
 
 
-let activitiesMarkers = [];
+// let activitiesMarkers = [];
 
-function activitiesCreateMarkers(amenitiesMarkers) {
+function createActivitiesMarkers(amenitiesMarkers) {
     // Use this link to get the Activities data
     // Grand Canyon (GRCA)
     let linkActivitiesGRCA = "https://developer.nps.gov/api/v1/activities?q=GRCA&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
@@ -97,10 +96,11 @@ function activitiesCreateMarkers(amenitiesMarkers) {
     let linkActivitiesSAGU = "https://developer.nps.gov/api/v1/activities?q=SAGU&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
     let activitiesAZ = [linkActivitiesGRCA, linkActivitiesPEFO, linkActivitiesSAGU]
     let activitiesPopUp = [];
+    let activitiesMarkers = [];
 
     // Create Activities Popup for each Park
     for(let i = 0;i<activitiesAZ.length;i++) {
-        // console.log(`Acitivities loop ${i}`);
+        console.log(`Acitivities loop ${i}`);
         let activities,activitiesList;
         d3.json(activitiesAZ[i]).then(function(data) {
             // console.log(data.data)
@@ -119,19 +119,68 @@ function activitiesCreateMarkers(amenitiesMarkers) {
                 L.marker(parksCoords[i]).bindPopup(activitiesList,{"maxHeight":"350"})
             );
             if(i == 2) {
-                // console.log("Inside loop: ");
-                // console.log(activitiesMarkers[0]);
+                console.log("Inside loop: ");
+                console.log(activitiesMarkers[0]);
                 // return activitiesMarkers;
-                makeMap(amenitiesMarkers,activitiesMarkers);
+                createCampgroundMarkers(amenitiesMarkers,activitiesMarkers);
             }
         });
     };
 }
 
+function createCampgroundMarkers(amenitiesMarkers,activitiesMarkers) {
+    // Grand Canyon URLs
+    let campgroundsLinkGRCA = "https://developer.nps.gov/api/v1/campgrounds?parkCode=GRCA&stateCode=AZ&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
+    // Saguaro URLs
+    let campgroundsLinkSAGU = "https://developer.nps.gov/api/v1/campgrounds?parkCode=sagu&stateCode=&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22"
+    // Petrified Forest URLs
+    let campgroundsLinkPEFO = "https://developer.nps.gov/api/v1/campgrounds?parkCode=PEFO&stateCode=&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22"
+    let campgroundsAZ = [campgroundsLinkGRCA, campgroundsLinkPEFO, campgroundsLinkSAGU]
+    let campgroundMarkers = [];
 
-function makeMap(amenitiesMarkers,activitiesMarkers) {
+    for(let j = 0;j<campgroundsAZ.length;j++) {
+        // Fetch the data 
+        d3.json(campgroundsAZ[j]).then(data => {
+            console.log(data.total);
+            console.log(data.data);
+            console.log(data.data[0].name);
+            // Find the number of campgrounds 
+            let numCampgrounds = data.data.length;
+            console.log(numCampgrounds);
+
+            // Initialize an array for the campground markers
+            // let campgroundMarkers = [];
+            
+            // Create a for loop to iterate through each campground and pull the name, latitude, longitude, 
+            // and number of reservable and/or first come first serve campgrounds
+            for (let i = 0; i < numCampgrounds; i++) {
+                let campName = data.data[i].name;
+                let campLat = parseFloat(data.data[i].latitude);
+                let campLon = parseFloat(data.data[i].longitude);
+                let campDescrip = data.data[i].description;
+                let campReserve = parseFloat(data.data[i].numberOfSitesReservable);
+                let campFirstServe = parseFloat(data.data[i].numberOfSitesFirstComeFirstServe);
+                // Using the data pulled above, create a marker for each campground that displays its name and the different types of campsites available
+                let marker = L.marker([campLat, campLon])
+                .bindPopup(`<h2>${campName}</h2><hr><strong>Reservable:</strong> ${campReserve}<br><strong>First Come First Serve:</strong> ${campFirstServe}<br><strong>Campsite Description:</strong> ${campDescrip}`);
+                campgroundMarkers.push(marker);
+            };
+            console.log(campgroundMarkers);
+            // Create a layer group for the markers and add to the map 
+            // let campgroundMarkersLayer = L.layerGroup(campgroundMarkers)
+            // campgroundMarkersLayer.addTo(myMap);
+
+            if(j == 2) {
+                makeMap(amenitiesMarkers,activitiesMarkers,campgroundMarkers);
+            }
+        });
+    }
+};
+
+function makeMap(amenitiesMarkers,activitiesMarkers,campgroundMarkers) {
     let amenitiesLayer = L.layerGroup(amenitiesMarkers);
     let activitiesLayer = L.layerGroup(activitiesMarkers);
+    let campgroundMarkersLayer = L.layerGroup(campgroundMarkers)
 
     let baseMaps = {
         Street: street
@@ -139,7 +188,8 @@ function makeMap(amenitiesMarkers,activitiesMarkers) {
 
     let overlayMaps = {
         Amenities: amenitiesLayer,
-        Activities: activitiesLayer
+        Activities: activitiesLayer,
+        Campgrounds: campgroundMarkersLayer
     };
 
     let myMap = L.map("map", {
