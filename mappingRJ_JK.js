@@ -41,9 +41,11 @@ let linkSAGU = "https://developer.nps.gov/api/v1/mapdata/parkboundaries/SAGU?api
 let parksAZ = [linkGRCA, linkPEFO, linkSAGU]
 let parkNames = ["Grand Canyon National Park","Petrified Forest National Park","Saguaro National Park"]
 
-createAmenitiesMarkers();
+let amenitiesMarkers = [];
 
-function createAmenitiesMarkers(){
+amenitiesCreateMarkers();
+
+function amenitiesCreateMarkers(){
     // Use this link to get the Activities data
     // Grand Canyon (GRCA)
     let linkAmenitiesGRCA = "https://developer.nps.gov/api/v1/amenities?q=GRCA&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
@@ -53,7 +55,6 @@ function createAmenitiesMarkers(){
     let linkAmenitiesSAGU = "https://developer.nps.gov/api/v1/amenities?q=SAGU&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
     let amenitiesAZ = [linkAmenitiesGRCA, linkAmenitiesPEFO, linkAmenitiesSAGU]
     let amenitiesPopUp = [];
-    let amenitiesMarkers = [];
 
     // Create Amenities Popup for each Park
     for(let i = 0;i<amenitiesAZ.length;i++) {
@@ -77,16 +78,16 @@ function createAmenitiesMarkers(){
             if(i == 2) {
                 // console.log(amenitiesMarkers);
                 // intermediate(amenitiesMarkers);
-                createActivitiesMarkers(amenitiesMarkers);
+                activitiesCreateMarkers(amenitiesMarkers);
             }
         });
     };
 }
 
 
-// let activitiesMarkers = [];
+let activitiesMarkers = [];
 
-function createActivitiesMarkers(amenitiesMarkers) {
+function activitiesCreateMarkers(amenitiesMarkers) {
     // Use this link to get the Activities data
     // Grand Canyon (GRCA)
     let linkActivitiesGRCA = "https://developer.nps.gov/api/v1/activities?q=GRCA&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
@@ -96,11 +97,10 @@ function createActivitiesMarkers(amenitiesMarkers) {
     let linkActivitiesSAGU = "https://developer.nps.gov/api/v1/activities?q=SAGU&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
     let activitiesAZ = [linkActivitiesGRCA, linkActivitiesPEFO, linkActivitiesSAGU]
     let activitiesPopUp = [];
-    let activitiesMarkers = [];
 
     // Create Activities Popup for each Park
     for(let i = 0;i<activitiesAZ.length;i++) {
-        console.log(`Acitivities loop ${i}`);
+        // console.log(`Acitivities loop ${i}`);
         let activities,activitiesList;
         d3.json(activitiesAZ[i]).then(function(data) {
             // console.log(data.data)
@@ -119,37 +119,40 @@ function createActivitiesMarkers(amenitiesMarkers) {
                 L.marker(parksCoords[i]).bindPopup(activitiesList,{"maxHeight":"350"})
             );
             if(i == 2) {
-                console.log("Inside loop: ");
-                console.log(activitiesMarkers[0]);
+                // console.log("Inside loop: ");
+                // console.log(activitiesMarkers[0]);
                 // return activitiesMarkers;
-                createCampgroundMarkers(amenitiesMarkers,activitiesMarkers);
+                makeMap(amenitiesMarkers,activitiesMarkers);
             }
         });
     };
 }
 
-function createCampgroundMarkers(amenitiesMarkers,activitiesMarkers) {
-    // Grand Canyon URLs
-    let campgroundsLinkGRCA = "https://developer.nps.gov/api/v1/campgrounds?parkCode=GRCA&stateCode=AZ&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22";
-    // Saguaro URLs
-    let campgroundsLinkSAGU = "https://developer.nps.gov/api/v1/campgrounds?parkCode=sagu&stateCode=&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22"
-    // Petrified Forest URLs
-    let campgroundsLinkPEFO = "https://developer.nps.gov/api/v1/campgrounds?parkCode=PEFO&stateCode=&api_key=blywEmwS4iNmlVuXudK3iS8RjebrGcdU5Yx4xj22"
-    let campgroundsAZ = [campgroundsLinkGRCA, campgroundsLinkPEFO, campgroundsLinkSAGU]
-    let campgroundMarkers = [];
+// Create a global array for the campground markers
+let allCampgroundMarkers = [];
+// Add the links for the Arizona National Parks campgrounds
+// Grand Canyon
+let campgroundsLinkGRCA = "https://developer.nps.gov/api/v1/campgrounds?parkCode=GRCA&stateCode=AZ&api_key=ataJxgSDvGoCrq0JkanRbjfZOLoZ7tus45ogaawm";
+// Petified Forest
+let campgroundsLinkPEFO = "https://developer.nps.gov/api/v1/campgrounds?parkCode=PEFO&stateCode=AZ&api_key=ataJxgSDvGoCrq0JkanRbjfZOLoZ7tus45ogaawm";
+// Saguaro
+let campgroundsLinkSAGU = "https://developer.nps.gov/api/v1/campgrounds?parkCode=SAGU&stateCode=AZ&api_key=ataJxgSDvGoCrq0JkanRbjfZOLoZ7tus45ogaawm";
+let campgroundsAZ = [campgroundsLinkGRCA, campgroundsLinkPEFO, campgroundsLinkSAGU];
 
-    for(let j = 0;j<campgroundsAZ.length;j++) {
+// Write a function to create the markers
+function createCampgroundMarker(url) {
+    return new Promise((resolve, reject) => {
         // Fetch the data 
-        d3.json(campgroundsAZ[j]).then(data => {
-            console.log(data.total);
-            console.log(data.data);
-            console.log(data.data[0].name);
-            // Find the number of campgrounds 
-            let numCampgrounds = data.data.length;
-            console.log(numCampgrounds);
+        d3.json(url).then(data => {
+            // console.log(data.total);
+            // console.log(data.data);
+            // console.log(data.data[0].name);
 
             // Initialize an array for the campground markers
-            // let campgroundMarkers = [];
+            let campgroundMarkers = [];
+            // Find the number of campgrounds 
+            let numCampgrounds = data.data.length;
+            // console.log(numCampgrounds);
             
             // Create a for loop to iterate through each campground and pull the name, latitude, longitude, 
             // and number of reservable and/or first come first serve campgrounds
@@ -162,25 +165,105 @@ function createCampgroundMarkers(amenitiesMarkers,activitiesMarkers) {
                 let campFirstServe = parseFloat(data.data[i].numberOfSitesFirstComeFirstServe);
                 // Using the data pulled above, create a marker for each campground that displays its name and the different types of campsites available
                 let marker = L.marker([campLat, campLon])
-                .bindPopup(`<h2>${campName}</h2><hr><strong>Reservable:</strong> ${campReserve}<br><strong>First Come First Serve:</strong> ${campFirstServe}<br><strong>Campsite Description:</strong> ${campDescrip}`);
+                    .bindPopup(`<h2>${campName}</h2><hr><strong>Reservable:</strong> ${campReserve}<br><strong>First Come First Serve:</strong> ${campFirstServe}<br><strong>Campsite Description:</strong> ${campDescrip}`);
                 campgroundMarkers.push(marker);
             };
-            console.log(campgroundMarkers);
-            // Create a layer group for the markers and add to the map 
-            // let campgroundMarkersLayer = L.layerGroup(campgroundMarkers)
-            // campgroundMarkersLayer.addTo(myMap);
+            
+            // Push campground markers to global array
+            allCampgroundMarkers.push(...campgroundMarkers);
 
-            if(j == 2) {
-                makeMap(amenitiesMarkers,activitiesMarkers,campgroundMarkers);
-            }
+            // Resolve the promise with the campground markers
+            resolve(campgroundMarkers);
+        }).catch(error => {
+            // Reject the promise if there is an error
+            reject(error);
         });
-    }
+    });
 };
+createCampgroundMarker(campgroundsLinkGRCA);
+createCampgroundMarker(campgroundsLinkSAGU);
+createCampgroundMarker(campgroundsLinkPEFO);  
 
-function makeMap(amenitiesMarkers,activitiesMarkers,campgroundMarkers) {
+// Use Promise.all to ensure that all the promises are resolved before command is executed 
+Promise.all(campgroundsAZ.map(createCampgroundMarker))
+    .then(() => {
+        console.log(allCampgroundMarkers) 
+    })
+    .catch(error => {
+        console.error("Error fetching campground data:", error)
+    });
+
+
+// // Write a function to create the markers
+// function createCampgroundMarker(url) {
+//     // Add the links for the Arizona National Parks campgrounds
+//     // Grand Canyon
+//     let campgroundsLinkGRCA = "https://developer.nps.gov/api/v1/campgrounds?parkCode=GRCA&stateCode=AZ&api_key=ataJxgSDvGoCrq0JkanRbjfZOLoZ7tus45ogaawm";
+//     // Petified Forest
+//     let campgroundsLinkPEFO = "https://developer.nps.gov/api/v1/campgrounds?parkCode=PEFO&stateCode=AZ&api_key=ataJxgSDvGoCrq0JkanRbjfZOLoZ7tus45ogaawm";
+//     // Saguaro
+//     let campgroundsLinkSAGU = "https://developer.nps.gov/api/v1/campgrounds?parkCode=SAGU&stateCode=AZ&api_key=ataJxgSDvGoCrq0JkanRbjfZOLoZ7tus45ogaawm";
+
+//     let campgroundsAZ = [campgroundsLinkGRCA, campgroundsLinkPEFO, campgroundsLinkSAGU];
+//     let campgroundsPopUp = [];
+
+//     let promises = campgroundsAZ.map(url => d3.json(url));
+
+//     Promise.all(promises).then(responses => {
+//         responses.forEach(data => {
+//             console.log(data.data);
+//             console.log(data.total);
+//             console.log(data.data);
+//             console.log(data.data[0].name);
+//             //  Find the number of campgrounds 
+//             let numCampgrounds = data.data.length;
+//             console.log(numCampgrounds);
+
+//         });
+//     });
+// }
+
+    // for (let i = 0; i < campgroundsAZ.length; i++) {
+        // Initialize an array to hold the campgrounds
+        // let campgrounds = [];
+        // Fetch the data 
+        // d3.json(campgroundsAZ[i]).then(data => {
+            // console.log(data.data);
+            // console.log(data.total);
+            // console.log(data.data);
+            // console.log(data.data[0].name);
+            // //  Find the number of campgrounds 
+            // let numCampgrounds = data.data.length;
+            // console.log(numCampgrounds);
+
+//             // Initialize an array for the campground markers
+//             let campgroundPopUp = [];
+            
+//             // Create a for loop to iterate through each campground and pull the name, latitude, longitude, 
+//             // and number of reservable and/or first come first serve campgrounds
+//             for (let i = 0; i < numCampgrounds; i++) {
+//                 let campName = data.data[i].name;
+//                 let campLat = parseFloat(data.data[i].latitude);
+//                 let campLon = parseFloat(data.data[i].longitude);
+//                 let campDescrip = data.data[i].description;
+//                 let campReserve = parseFloat(data.data[i].numberOfSitesReservable);
+//                 let campFirstServe = parseFloat(data.data[i].numberOfSitesFirstComeFirstServe);
+//                 // Using the data pulled above, create a marker for each campground that displays its name and the different types of campsites available
+//                 let marker = L.marker([campLat, campLon])
+//                     .bindPopup(`<h2>${campName}</h2><hr><strong>Reservable:</strong> ${campReserve}<br><strong>First Come First Serve:</strong> ${campFirstServe}<br><strong>Campsite Description:</strong> ${campDescrip}`);
+//                 campgroundPopUp.push(marker);
+//             }
+//             return campgroundPopUp;
+//         });
+//         })
+//     }
+// };
+
+
+function makeMap(amenitiesMarkers, activitiesMarkers, allCampgroundMarkers) {
     let amenitiesLayer = L.layerGroup(amenitiesMarkers);
     let activitiesLayer = L.layerGroup(activitiesMarkers);
-    let campgroundMarkersLayer = L.layerGroup(campgroundMarkers)
+    let campgroundLayer = L.layerGroup(allCampgroundMarkers)
 
     let baseMaps = {
         Street: street
@@ -189,7 +272,7 @@ function makeMap(amenitiesMarkers,activitiesMarkers,campgroundMarkers) {
     let overlayMaps = {
         Amenities: amenitiesLayer,
         Activities: activitiesLayer,
-        Campgrounds: campgroundMarkersLayer
+        Campgrounds: campgroundLayer
     };
 
     let myMap = L.map("map", {
@@ -264,5 +347,4 @@ function createBoundaries(myMap) {
     // })
     }
 }
-
 
