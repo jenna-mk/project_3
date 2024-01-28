@@ -2,11 +2,11 @@
 The purpose of this project was to create an interactive map of the national parks in Arizona (Grand Canyon National Park, Petrified Forest National Park, and Saguaro National Park) and analyze various aspects of these parks such as available amentities, common activities, and distribution, location, and reservation status of campgrounds. This project was written in JavaScript and uses the D3, Leaflet, and Chart.js libraries to create the visualizations. 
 
 ## How to Use
-To view the charts, navigate to the national_parks_charts folder. To view the chart for the activities for each park, navigate to activities/activity.html. To view the code used to create the activities chart, navigate to activities/activities_data_frame.ipynb. This chart shows the number of activities for each park classified into specific categories, and visualizes which parks have the highest number of activities for each. 
+To view the charts, navigate to the national_parks_charts folder. To view the chart for the activities for each park, navigate to activity.html. To view the code used to create the activities chart, navigate to activities/activities_data_frame.ipynb. This chart shows the number of activities for each park classified into specific categories, and visualizes which parks have the highest number of activities for each. 
 
-To view the chart for the entrance fees, navigate to entrance_fees/entrancefee.html. To view the code used to create the entrance fees chart, navigate to entrance_fees/entrancefee.ipynb. This chart shows the different entrance fees for each park, based on vehicle and entrance type.
+To view the chart for the entrance fees, navigate to entrancefee.html. To view the code used to create the entrance fees chart, navigate to entrance_fees/entrancefee.ipynb. This chart shows the different entrance fees for each park, based on vehicle and entrance type.
 
-To view the map for this project, navigate to national_parks_map/index_RJ_JK_Final.html. To view the code used to create this map, navigate to national_parks_map/mapping_RJ_JK_Final.js. The map shows the park boundaries of all three of the national parks in Arizona (Grand Canyon National Park, Petrified Forest National Park, and Saguaro National Park) and contains three toggleable marker layers: 
+To view the map for this project, navigate to index_RJ_JK_Final.html. To view the code used to create this map, navigate to national_parks_map/mapping_RJ_JK_Final.js. The map shows the park boundaries of all three of the national parks in Arizona (Grand Canyon National Park, Petrified Forest National Park, and Saguaro National Park) and contains three toggleable marker layers: 
 1. Amenities
    * When an amenities marker is clicked, a scrollable popup will appear that lists all of the amenities available at that park
 2. Activities
